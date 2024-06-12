@@ -1,0 +1,53 @@
+﻿@model SistemaInventario.Modelos.ViewModels.ProductoVM
+
+
+<form method="post">
+    <div class="col-8 pt-4">
+        <div class="form-group row" >
+            <div class="col-4">
+                <select class="form-control" asp-items="Model.CategoriaLista" name="categoria">
+                    <option>Todas las Categorias</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <input class="form-control" name="filtro" placeholder="Buscar Por Nombre" />
+            </div>
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary" asp-action="Index">
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="row pb-3">
+    @foreach(var producto in Model.ProductoLista)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12 p-1" style="border:1px solid #008cba; border-radius:5px;">
+                    <div class="card" style="border:0px;">
+                        <img src="@producto.ImagenUrl" class="card-img-top rounded" />
+                        <div class="pl-1">
+                            <p class="card-title h5"><b style="color:#2c3e50">@producto.Descripcion</b></p>
+                        </div>
+                        <div class="pl-1">
+                            <p class="card-title h5"><b style="color:#2c3e50">@producto.Categoria.Nombre</b></p>
+                        </div>
+                        <div style="padding-left:5px;">
+                            <p>Precio: <b>$ @producto.Precio.ToString("0.00")</b></p>
+                        </div>
+                    </div>
+                    <div>
+                        <a asp-action="Detalle" class="btn btn-primary form-control" asp-route-id="@producto.Id">Detalle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+</div>

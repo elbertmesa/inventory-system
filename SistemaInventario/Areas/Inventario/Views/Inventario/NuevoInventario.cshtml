@@ -1,0 +1,145 @@
+﻿@model SistemaInventario.Modelos.ViewModels.InventarioViewModel
+@{
+    ViewData["Title"] = "NuevoInventario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-header bg-dark text-light ml-0 row container">
+    <div class="col-6">
+        <i class="fas fa-boxes"></i> Nuevo Inventario
+    </div>
+</div>
+
+<form method="post" class="p-2">
+    <input asp-for="@Model.Inventario.Id" hidden name="inventarioId"/>
+
+    <div class="form-group row">
+        <div class="col-2" style="text-align:right;">
+            <label class="col-form-label" style="text-align:right;">Bodega</label>
+        </div>
+        <div class="col-4">
+            @Html.DropDownListFor(b=> b.Inventario.BodegaId, Model.BodegaLista,"Seleccione Bodega",
+                new { @class="form-control", id="bodegaId" })
+            <span asp-validation-for="Inventario.BodegaId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-2" style="text-align:right;">
+            <label class="col-form-label" style="text-align:right">Producto:</label>
+        </div>
+        <div class="col-4">
+            <select name="producto" asp-items="Model.ProductoLista" class="form-control" id="productoId">
+               <option value="">Seleccione un Producto</option> 
+            </select>
+        </div>
+        <div class="col-1">
+            <label class="col-form-label">Cantidad:</label>
+        </div>
+        <div class="col-1">
+            <input name="cantidad" id="cantidadId" class="form-control" maxlength="3" type="number" min="1" value="1"/>
+        </div>
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary" asp-action="NuevoInventario" id="btnProducto">
+                <i class="fas fa-plus"></i> Agregar
+            </button>
+        </div>
+    </div>
+
+</form>
+
+<div>
+    <table class="table table-striped border">
+        <thead class="thead-dark">
+            <tr class="table-secondary thead-dark">
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Marca
+                </th>
+                <th style="text-align:right;">
+                    Costo
+                </th>
+                <th style="text-align:right;">
+                    Stock
+                </th>
+                <th style="text-align:right;">
+                    Cantidad
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.InventarioDetalles)
+            {
+            <tr>
+                <td style="font-size:14px;">
+                    @Html.DisplayFor(m => item.Producto.Descripcion)
+                </td>
+                <td style="font-size:14px;">
+                    @Html.DisplayFor(m => item.Producto.Marca.Nombre)
+                </td>
+                <td style="font-size:14px;text-align:right;">
+                    @Html.DisplayFor(m => item.Producto.Costo)
+                </td>
+                <td style="font-size:14px;text-align:right;">
+                    @Html.DisplayFor(m => item.StockAnterior)
+                </td>
+                <td style="font-size:14px;text-align:right;color:blue;font-weight:bold;">
+                    @Html.DisplayFor(m => item.Cantidad)
+                </td>
+                <td>
+                    <a class="btn btn-primary text-white" asp-action="Mas" asp-route-Id="@item.Id">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                    <a class="btn btn-dark text-white" asp-action="Menos" asp-route-Id="@item.Id">
+                        <i class="fas fa-minus"></i>
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.InventarioDetalles.Count>0)
+{
+    <div class="align-content-lg-center">
+        <div class="col-2">
+            <a asp-action="GenerarStock" class="btn btn-warning form-control" asp-route-Id="@Model.Inventario.Id">
+                <i class="fas fa-save"></i> Generar Stock
+            </a>
+        </div>
+    </div>
+}
+
+
+@section Scripts{ 
+     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    $("#btnProducto").click(function () {
+        var cantidad = document.getElementById("cantidadId").value;
+        var bodega = document.getElementById("bodegaId").value;
+        var producto = document.getElementById("productoId").value;
+        if (cantidad.toString()=='' || cantidad<1) {
+            swal("Error", "Seleccione una cantidad Correcta", "error");
+            return false;
+        }
+
+        if (bodega.toString() == '' ) {
+            swal("Error", "Seleccione una Bodega", "error");
+            return false;
+        }
+
+        if (producto.toString() == '') {
+            swal("Error", "Seleccione un Producto", "error");
+            return false;
+        }
+
+    });
+</script>
+ 
+}
+
